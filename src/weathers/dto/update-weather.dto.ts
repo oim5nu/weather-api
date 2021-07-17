@@ -6,7 +6,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
-import { WeatherCondition } from '../weather.model';
+import { WeatherCondition } from '../weather-condition.enum';
 export class UpdateWeatherQueryDto {
   @IsNotEmpty()
   @IsString()
@@ -23,7 +23,7 @@ export class UpdateWeatherDto {
 
   @IsOptional()
   @IsNumberString()
-  sequence?: number;
+  seq?: number;
 
   @IsOptional()
   @IsString()
@@ -39,5 +39,5 @@ export class UpdateWeatherDto {
 
   @IsOptional()
   @IsEnum(WeatherCondition)
-  condition?: WeatherCondition;
+  weatherCondition?: WeatherCondition;
 }

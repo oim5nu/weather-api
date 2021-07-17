@@ -1,147 +1,76 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Weather, WeatherCondition } from './weather.model';
+import { WeatherCondition } from './weather-condition.enum';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { GetWeatherDto } from './dto/get-weather.dto';
 import {
   UpdateWeatherDto,
   UpdateWeatherQueryDto,
 } from './dto/update-weather.dto';
-import { v4 as uuid } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { WeathersRepository } from './weathers.repository';
+import { Weather } from './weather.entity';
 
 @Injectable()
 export class WeathersService {
-  private weathers: Weather[] = [
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-16'),
-      city: 'Melbourne',
-      sequence: 0,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.CLOUDY,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-17'),
-      city: 'Melbourne',
-      sequence: 1,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.RAINING,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-18'),
-      city: 'Melbourne',
-      sequence: 2,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.CLEAR,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-19'),
-      city: 'Melbourne',
-      sequence: 3,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.CLEAR,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-16'),
-      city: 'Keysborough',
-      sequence: 0,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.CLEAR,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-17'),
-      city: 'Keysborough',
-      sequence: 1,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.CLEAR,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-18'),
-      city: 'Keysborough',
-      sequence: 2,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.RAINING,
-    },
-    {
-      id: uuid(),
-      theDate: new Date('2021-07-19'),
-      city: 'Keysborough',
-      sequence: 3,
-      temperature: '30',
-      highestTemperature: '40',
-      lowestTemperature: '20',
-      condition: WeatherCondition.RAINING,
-    },
-  ];
+  constructor(
+    @InjectRepository(WeathersRepository)
+    private weathersRepository: WeathersRepository,
+  ) {}
 
-  getWeathers(getWeatherDto: GetWeatherDto): Weather[] {
+  async getWeathers(getWeatherDto: GetWeatherDto): Promise<Weather[]> {
     if (getWeatherDto?.city) {
-      return this.weathers.filter((weather) =>
-        weather.city.toLowerCase().includes(getWeatherDto.city.toLowerCase()),
-      );
+      const weathers = await this.weathersRepository.find({
+        city: getWeatherDto.city,
+      });
+      return weathers;
     }
-    return this.weathers;
+    return await this.weathersRepository.find({});
   }
 
-  createWeather(createWeatherDto: CreateWeatherDto): Weather {
+  async createWeather(createWeatherDto: CreateWeatherDto): Promise<Weather> {
     // prettier-ignore
-    const { theDate, city, sequence, temperature, highestTemperature, lowestTemperature, condition } = createWeatherDto;
+    const { theDate, city, seq, temperature, highestTemperature, lowestTemperature, weatherCondition } = createWeatherDto;
     // prettier-ignore
-    const weather = { id: uuid(), theDate, city, sequence, temperature, highestTemperature, lowestTemperature, condition: condition as WeatherCondition, };
-    this.weathers.push(weather);
+    const weather = await this.weathersRepository.create({
+      theDate, city, seq, temperature, highestTemperature, lowestTemperature, weatherCondition,
+    });
+
+    await this.weathersRepository.save(weather);
     return weather;
   }
 
-  updateWeather(
+  async updateWeather(
     updateWeatherQueryDto: UpdateWeatherQueryDto,
     updateWeatherDto: UpdateWeatherDto,
-  ): Weather {
+  ): Promise<Weather> {
     const { city, theDate } = updateWeatherQueryDto;
     // prettier-ignore
-    const { theDate: newDate, temperature, highestTemperature, lowestTemperature, condition } = updateWeatherDto;
-    // prettier-ignore
-    // const weather = { id: uuid(), theDate, city, sequence, temperature, highestTemperature, lowestTemperature, condition: condition as WeatherCondition, };
-    // this.weathers.push(weather);
-    const index = this.weathers.findIndex(weather => weather.city === city && weather.theDate === theDate)
-    if (index >= 0) {
-      this.weathers[index] = {
-        ...this.weathers[index],
-        theDate: newDate ? newDate : this.weathers[index].theDate,
-        temperature: temperature
-          ? temperature
-          : this.weathers[index].temperature,
-        highestTemperature: highestTemperature
-          ? highestTemperature
-          : this.weathers[index].highestTemperature,
-        lowestTemperature: lowestTemperature
-          ? lowestTemperature
-          : this.weathers[index].lowestTemperature,
-        condition: condition
-          ? (condition as WeatherCondition)
-          : this.weathers[index].condition,
-      };
-      return this.weathers[index];
-    } else {
-      throw new NotFoundException();
-    }
+    const { theDate: newDate, seq, temperature, highestTemperature, lowestTemperature, weatherCondition } = updateWeatherDto;
+
+    const updateArgs: any = {};
+
+    if (newDate) updateArgs.theDate = newDate;
+
+    if (seq) updateArgs.seq = seq;
+    if (temperature) updateArgs.temperature = temperature;
+    if (highestTemperature) updateArgs.highestTemperature = highestTemperature;
+    if (lowestTemperature) updateArgs.lowestTemperature = lowestTemperature;
+    if (weatherCondition) updateArgs.weatherCondition = weatherCondition;
+
+    await this.weathersRepository
+      .createQueryBuilder()
+      .update('weather')
+      .set(updateArgs)
+      .where('weather.city = :city', { city })
+      .andWhere(`DATE_TRUNC('day', weather."theDate") = :theDate`, { theDate })
+      .execute();
+    const weather = await this.weathersRepository
+      .createQueryBuilder('weather')
+      .where('weather.city = :city', { city })
+      .andWhere(`DATE_TRUNC('day', weather."theDate") = :theDate`, {
+        theDate: newDate ? newDate : theDate,
+      })
+      .getOne();
+    return weather;
   }
 }

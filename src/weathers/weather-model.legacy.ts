@@ -2,11 +2,11 @@ export interface Weather {
   id: string;
   theDate: Date;
   city: string;
-  sequence: number;
+  seq: number;
   temperature: string;
   highestTemperature: string;
   lowestTemperature: string;
-  condition: WeatherCondition;
+  weatherCondition: WeatherCondition;
 }
 
 export enum WeatherCondition {

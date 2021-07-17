@@ -5,7 +5,7 @@ import {
   IsDateString,
   IsNumberString,
 } from 'class-validator';
-import { WeatherCondition } from '../weather.model';
+import { WeatherCondition } from '../weather-condition.enum';
 
 export class CreateWeatherDto {
   @IsNotEmpty()
@@ -14,7 +14,7 @@ export class CreateWeatherDto {
 
   @IsNotEmpty()
   @IsNumberString()
-  sequence: number;
+  seq: number;
 
   @IsNotEmpty()
   @IsDateString()
@@ -34,5 +34,5 @@ export class CreateWeatherDto {
 
   @IsNotEmpty()
   @IsEnum(WeatherCondition)
-  condition: WeatherCondition;
+  weatherCondition: WeatherCondition;
 }
