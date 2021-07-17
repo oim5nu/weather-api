@@ -12,8 +12,8 @@ export class WeathersController {
   constructor(private weathersService: WeathersService) {}
 
   @Get()
-  getAllWeathers(@Query() getWeatherDto: GetWeatherDto) {
-    return this.weathersService.getAllWeathers(getWeatherDto);
+  getWeathers(@Query() getWeatherDto: GetWeatherDto) {
+    return this.weathersService.getWeathers(getWeatherDto);
   }
 
   @Post()

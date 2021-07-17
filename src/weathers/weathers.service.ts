@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Weather, WeatherCondition } from './weather.model';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { GetWeatherDto } from './dto/get-weather.dto';
@@ -13,9 +13,9 @@ export class WeathersService {
   private weathers: Weather[] = [
     {
       id: uuid(),
-      theDate: '2021-07-16',
+      theDate: new Date('2021-07-16'),
       city: 'Melbourne',
-      sequence: '0',
+      sequence: 0,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -23,9 +23,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-17',
+      theDate: new Date('2021-07-17'),
       city: 'Melbourne',
-      sequence: '1',
+      sequence: 1,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -33,9 +33,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-18',
+      theDate: new Date('2021-07-18'),
       city: 'Melbourne',
-      sequence: '2',
+      sequence: 2,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -43,9 +43,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-18',
+      theDate: new Date('2021-07-19'),
       city: 'Melbourne',
-      sequence: '3',
+      sequence: 3,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -53,9 +53,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-16',
+      theDate: new Date('2021-07-16'),
       city: 'Keysborough',
-      sequence: '0',
+      sequence: 0,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -63,9 +63,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-17',
+      theDate: new Date('2021-07-17'),
       city: 'Keysborough',
-      sequence: '1',
+      sequence: 1,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -73,9 +73,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-18',
+      theDate: new Date('2021-07-18'),
       city: 'Keysborough',
-      sequence: '2',
+      sequence: 2,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -83,9 +83,9 @@ export class WeathersService {
     },
     {
       id: uuid(),
-      theDate: '2021-07-18',
+      theDate: new Date('2021-07-19'),
       city: 'Keysborough',
-      sequence: '3',
+      sequence: 3,
       temperature: '30',
       highestTemperature: '40',
       lowestTemperature: '20',
@@ -93,7 +93,7 @@ export class WeathersService {
     },
   ];
 
-  getAllWeathers(getWeatherDto: GetWeatherDto): Weather[] {
+  getWeathers(getWeatherDto: GetWeatherDto): Weather[] {
     if (getWeatherDto?.city) {
       return this.weathers.filter((weather) =>
         weather.city.toLowerCase().includes(getWeatherDto.city.toLowerCase()),
@@ -115,17 +115,17 @@ export class WeathersService {
     updateWeatherQueryDto: UpdateWeatherQueryDto,
     updateWeatherDto: UpdateWeatherDto,
   ): Weather {
-    const { city, sequence } = updateWeatherQueryDto;
+    const { city, theDate } = updateWeatherQueryDto;
     // prettier-ignore
-    const { theDate, temperature, highestTemperature, lowestTemperature, condition } = updateWeatherDto;
+    const { theDate: newDate, temperature, highestTemperature, lowestTemperature, condition } = updateWeatherDto;
     // prettier-ignore
     // const weather = { id: uuid(), theDate, city, sequence, temperature, highestTemperature, lowestTemperature, condition: condition as WeatherCondition, };
     // this.weathers.push(weather);
-    const index = this.weathers.findIndex(weather => weather.city === city && weather.sequence === sequence)
+    const index = this.weathers.findIndex(weather => weather.city === city && weather.theDate === theDate)
     if (index >= 0) {
       this.weathers[index] = {
         ...this.weathers[index],
-        theDate: theDate ? theDate : this.weathers[index].theDate,
+        theDate: newDate ? newDate : this.weathers[index].theDate,
         temperature: temperature
           ? temperature
           : this.weathers[index].temperature,
@@ -141,7 +141,7 @@ export class WeathersService {
       };
       return this.weathers[index];
     } else {
-      throw new Error('Could not find record');
+      throw new NotFoundException();
     }
   }
 }
