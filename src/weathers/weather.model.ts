@@ -2,6 +2,7 @@ export interface Weather {
   id: string;
   theDate: string;
   city: string;
+  sequence: string;
   temperature: string;
   highestTemperature: string;
   lowestTemperature: string;
