@@ -1,3 +1,7 @@
+export class UpdateWeatherQueryDto {
+  city: string;
+  sequence: string;
+}
 export class UpdateWeatherDto {
   city: string;
   sequence: string;

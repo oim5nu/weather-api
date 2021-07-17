@@ -1,7 +1,10 @@
 import { Controller, Get, Post, Patch, Body, Query } from '@nestjs/common';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { GetWeatherDto } from './dto/get-weather.dto';
-import { UpdateWeatherDto } from './dto/update-weather.dto';
+import {
+  UpdateWeatherDto,
+  UpdateWeatherQueryDto,
+} from './dto/update-weather.dto';
 import { WeathersService } from './weathers.service';
 
 @Controller('weathers')
@@ -20,8 +23,11 @@ export class WeathersController {
   }
 
   @Patch()
-  updateWeather(@Body() updateWeatherDto: UpdateWeatherDto) {
+  updateWeather(
+    @Query() updateWeatherQueryDto: UpdateWeatherQueryDto,
+    @Body() updateWeatherDto: UpdateWeatherDto,
+  ) {
     // prettier-ignore
-    return this.weathersService.updateWeather(updateWeatherDto);
+    return this.weathersService.updateWeather(updateWeatherQueryDto, updateWeatherDto);
   }
 }

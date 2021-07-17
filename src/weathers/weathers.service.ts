@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { Weather, WeatherCondition } from './weather.model';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { GetWeatherDto } from './dto/get-weather.dto';
-import { UpdateWeatherDto } from './dto/update-weather.dto';
+import {
+  UpdateWeatherDto,
+  UpdateWeatherQueryDto,
+} from './dto/update-weather.dto';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -108,9 +111,13 @@ export class WeathersService {
     return weather;
   }
 
-  updateWeather(updateWeatherDto: UpdateWeatherDto): Weather {
+  updateWeather(
+    updateWeatherQueryDto: UpdateWeatherQueryDto,
+    updateWeatherDto: UpdateWeatherDto,
+  ): Weather {
+    const { city, sequence } = updateWeatherQueryDto;
     // prettier-ignore
-    const { city, sequence, theDate, temperature, highestTemperature, lowestTemperature, condition } = updateWeatherDto;
+    const { theDate, temperature, highestTemperature, lowestTemperature, condition } = updateWeatherDto;
     // prettier-ignore
     // const weather = { id: uuid(), theDate, city, sequence, temperature, highestTemperature, lowestTemperature, condition: condition as WeatherCondition, };
     // this.weathers.push(weather);
