@@ -17,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
       database: 'weather',
       autoLoadEntities: true,
       synchronize: true,
+      entities: [__dirname + '/**/*.entity.{js,ts}'],
     }),
     AuthModule,
   ],

@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Patch, Body, Query } from '@nestjs/common';
+// prettier-ignore
+import { Controller, Get, Post, Patch, Body, Query, UseGuards, } from '@nestjs/common';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { GetWeatherDto } from './dto/get-weather.dto';
 import {
@@ -7,8 +8,10 @@ import {
 } from './dto/update-weather.dto';
 import { WeathersService } from './weathers.service';
 import { Weather } from './weather.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('weathers')
+@UseGuards(AuthGuard())
 export class WeathersController {
   constructor(private weathersService: WeathersService) {}
 

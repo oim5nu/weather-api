@@ -1,7 +1,16 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { WeatherToUser } from '../weather-to-user/weather-user.entity';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { WeatherCondition } from './weather-condition.enum';
 
 @Entity()
+@Index(['city', 'theDate'], { unique: true })
+//@Index(['city', 'seq'], { unique: true }) // Reserved
 export class Weather {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -26,4 +35,7 @@ export class Weather {
 
   @Column()
   weatherCondition: WeatherCondition;
+
+  @OneToMany(() => WeatherToUser, (weatherToUser) => weatherToUser.weather)
+  weatherToUsers: WeatherToUser[];
 }
