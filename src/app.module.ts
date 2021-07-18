@@ -3,6 +3,7 @@ import { WeathersModule } from './weathers/weathers.module';
 //import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { CitiesModule } from './cities/cities.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity.{js,ts}'],
     }),
     AuthModule,
+    CitiesModule,
   ],
 })
 export class AppModule {}

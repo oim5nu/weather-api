@@ -1,20 +1,18 @@
 import { CityToUser } from '../city-to-user/city-user.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Weather } from 'src/weathers/weather.entity';
 
 @Entity()
-export class User {
+export class City {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
   @Column({ unique: true })
-  username!: string;
+  cityname!: string;
 
-  @Column()
-  password!: string;
-
-  // @OneToMany(() => WeatherToUser, (weatherToUser) => weatherToUser.user)
-  // weatherToUsers!: WeatherToUser[];
-
-  @OneToMany(() => CityToUser, (cityToUser) => cityToUser.user)
+  @OneToMany(() => CityToUser, (cityToUser) => cityToUser.city)
   cityToUsers!: CityToUser[];
+
+  @OneToMany(() => Weather, (weather) => weather.city)
+  weathers: Weather[];
 }

@@ -10,7 +10,7 @@ import { WeatherCondition } from '../weather-condition.enum';
 export class CreateWeatherDto {
   @IsNotEmpty()
   @IsString()
-  city: string;
+  cityname: string;
 
   @IsNotEmpty()
   @IsNumberString()

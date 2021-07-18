@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class GetWeatherDto {
+export class GetCityDto {
   @IsOptional()
   @IsString()
   cityname?: string;

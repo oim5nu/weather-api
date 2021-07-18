@@ -1,41 +1,42 @@
-import { WeatherToUser } from '../weather-to-user/weather-user.entity';
+//import { WeatherToUser } from '../weather-to-user/weather-users.entity';
 import {
   Column,
   Entity,
   Index,
-  OneToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { WeatherCondition } from './weather-condition.enum';
+import { City } from 'src/cities/city.entity';
 
 @Entity()
-@Index(['city', 'theDate'], { unique: true })
+@Index(['cityname', 'theDate'], { unique: true })
 //@Index(['city', 'seq'], { unique: true }) // Reserved
 export class Weather {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  id!: string;
 
   @Column()
-  city: string;
+  cityname!: string;
 
   @Column()
-  theDate: Date;
+  theDate!: Date;
 
   @Column()
-  seq: number;
+  seq!: number;
 
   @Column()
-  temperature: string;
+  temperature!: string;
 
   @Column()
-  highestTemperature: string;
+  highestTemperature!: string;
 
   @Column()
-  lowestTemperature: string;
+  lowestTemperature!: string;
 
   @Column()
-  weatherCondition: WeatherCondition;
+  weatherCondition!: WeatherCondition;
 
-  @OneToMany(() => WeatherToUser, (weatherToUser) => weatherToUser.weather)
-  weatherToUsers: WeatherToUser[];
+  @ManyToOne(() => City, (city) => city.weathers)
+  city: City;
 }

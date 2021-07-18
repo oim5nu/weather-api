@@ -1,5 +1,5 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { WeatherCondition } from './weather-condition.enum';
+import { Injectable } from '@nestjs/common';
+//import { WeatherCondition } from './weather-condition.enum';
 import { CreateWeatherDto } from './dto/create-weather.dto';
 import { GetWeatherDto } from './dto/get-weather.dto';
 import {
@@ -18,9 +18,9 @@ export class WeathersService {
   ) {}
 
   async getWeathers(getWeatherDto: GetWeatherDto): Promise<Weather[]> {
-    if (getWeatherDto?.city) {
+    if (getWeatherDto?.cityname) {
       const weathers = await this.weathersRepository.find({
-        city: getWeatherDto.city,
+        cityname: getWeatherDto.cityname,
       });
       return weathers;
     }
@@ -29,10 +29,10 @@ export class WeathersService {
 
   async createWeather(createWeatherDto: CreateWeatherDto): Promise<Weather> {
     // prettier-ignore
-    const { theDate, city, seq, temperature, highestTemperature, lowestTemperature, weatherCondition } = createWeatherDto;
+    const { theDate, cityname, seq, temperature, highestTemperature, lowestTemperature, weatherCondition } = createWeatherDto;
     // prettier-ignore
-    const weather = await this.weathersRepository.create({
-      theDate, city, seq, temperature, highestTemperature, lowestTemperature, weatherCondition,
+    const weather = this.weathersRepository.create({
+      theDate, cityname, seq, temperature, highestTemperature, lowestTemperature, weatherCondition,
     });
 
     await this.weathersRepository.save(weather);
